@@ -1,66 +1,30 @@
-## Foundry
+Initializer Protection Vulnerability — Foundry PoC
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+This repository demonstrates the security difference between using OpenZeppelin's initializer modifier and having no initialization protection in upgradeable contracts.
 
-Foundry consists of:
+It includes two minimal smart contracts, their tests, and reproducible Foundry PoCs:
 
-- **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
-- **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
-- **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
-- **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+WithoutInitializer.sol — vulnerable
 
-## Documentation
+WithInitializer.sol — properly protected
 
-https://book.getfoundry.sh/
+The purpose of this repo is educational security research showing why initializer protection is critical in upgradeable proxy contracts.
 
-## Usage
+📌 Overview
 
-### Build
+In upgradeable contracts, constructors do not run.
+So initialization must be done manually using an init() function.
 
-```shell
-$ forge build
-```
+If this initializer is not protected, anyone can:
 
-### Test
+call init() multiple times
 
-```shell
-$ forge test
-```
+override the contract owner
 
-### Format
+modify critical state variables
 
-```shell
-$ forge fmt
-```
+take control of the contract
 
-### Gas Snapshots
+This is a common vulnerability in upgradeable smart contract systems.
 
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+This repo shows exactly how it happens and how OpenZeppelin prevents it.
